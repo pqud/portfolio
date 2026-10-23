@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { atPaneEdge, enterScene, freshWheelGate, resolveRoute, stepScene, takeWheel, wheelAction } from '../src/lib/logic.ts'
+import { atPaneEdge, enterScene, freshWheelGate, resolveRoute, stepScene, stripBase, takeWheel, wheelAction, withBase } from '../src/lib/logic.ts'
 
 const known = [
   { id: 'fe', projects: ['harudew', 'dashboard'] },
@@ -13,6 +13,10 @@ test('resolveRoute', () => {
   assert.deepEqual(resolveRoute('/fe/harudew', known, 'fe'), { persona: 'fe', projectId: 'harudew', scene: 4 })
   assert.deepEqual(resolveRoute('/nope', known, 'fe'), { redirect: '/' })
   assert.deepEqual(resolveRoute('/fe/missing', known, 'fe'), { redirect: '/' })
+  assert.equal(withBase('/fe/harudew', '/portfolio/'), '/portfolio/fe/harudew')
+  assert.equal(withBase('/', '/portfolio/'), '/portfolio/')
+  assert.equal(stripBase('/portfolio/fe/harudew', '/portfolio/'), '/fe/harudew')
+  assert.equal(stripBase('/portfolio/', '/portfolio/'), '/')
 })
 
 test('snap and pane', () => {

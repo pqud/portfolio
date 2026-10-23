@@ -3,7 +3,7 @@ import { Canvas } from '@react-three/fiber'
 import { createHum } from './audio'
 import { catalog, personas } from './content'
 import { fallbackId, site } from './content/site'
-import { atPaneEdge, enterScene, resolveRoute, stepScene, wheelAction, type Pane } from './lib/logic'
+import { atPaneEdge, enterScene, resolveRoute, stepScene, stripBase, wheelAction, withBase, type Pane } from './lib/logic'
 import { Frame } from './components/Frame'
 import { Hud } from './components/Hud'
 import { Nav } from './components/Nav'
@@ -18,7 +18,7 @@ import { ProjectScene } from './components/scenes/ProjectScene'
 type PersonaId = keyof typeof personas
 
 function readLocation() {
-  const route = resolveRoute(location.pathname, catalog, fallbackId)
+  const route = resolveRoute(stripBase(location.pathname, import.meta.env.BASE_URL), catalog, fallbackId)
   if ('redirect' in route) return { persona: fallbackId as PersonaId, projectId: null as string | null, scene: 0, redirect: true }
   return { persona: route.persona as PersonaId, projectId: route.projectId, scene: route.scene, redirect: false }
 }
@@ -91,7 +91,7 @@ export function App() {
       projectRef.current = pid
       setProjectId(pid)
       const path = next === 4 && pid ? `/${personaRef.current}/${pid}` : `/${personaRef.current}`
-      history.pushState({ scene: next, projectId: pid }, '', path)
+      history.pushState({ scene: next, projectId: pid }, '', withBase(path, import.meta.env.BASE_URL))
     }
     isChangingRef.current = true
     console.log('[scene]', { from, to: next, via: dir })
@@ -110,7 +110,7 @@ export function App() {
     setScene(next)
     setProjectId(pid)
     const path = next === 4 && pid ? `/${personaRef.current}/${pid}` : `/${personaRef.current}`
-    history.pushState({ scene: next, projectId: pid }, '', path)
+    history.pushState({ scene: next, projectId: pid }, '', withBase(path, import.meta.env.BASE_URL))
     if (reducedRef.current) finishChange()
   }
 
@@ -124,7 +124,7 @@ export function App() {
     setStartScene(4)
     setScene(4)
     setProjectId(id)
-    history.pushState({ scene: 4, projectId: id }, '', `/${personaRef.current}/${id}`)
+    history.pushState({ scene: 4, projectId: id }, '', withBase(`/${personaRef.current}/${id}`, import.meta.env.BASE_URL))
     if (reducedRef.current) finishChange()
   }
 
@@ -148,9 +148,9 @@ export function App() {
   }
 
   useEffect(() => {
-    if (boot.current.redirect) history.replaceState({ scene: 0, projectId: null }, '', '/')
+    if (boot.current.redirect) history.replaceState({ scene: 0, projectId: null }, '', withBase('/', import.meta.env.BASE_URL))
     const onPop = () => {
-      const route = resolveRoute(location.pathname, catalog, fallbackId)
+      const route = resolveRoute(stripBase(location.pathname, import.meta.env.BASE_URL), catalog, fallbackId)
       if ('redirect' in route) {
                personaRef.current = fallbackId
         startSceneRef.current = 0
@@ -160,7 +160,7 @@ export function App() {
         setStartScene(0)
         setScene(0)
         setProjectId(null)
-        history.replaceState({ scene: 0, projectId: null }, '', '/')
+        history.replaceState({ scene: 0, projectId: null }, '', withBase('/', import.meta.env.BASE_URL))
         return
       }
       const id = route.persona as PersonaId

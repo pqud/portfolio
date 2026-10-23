@@ -2,8 +2,8 @@ import { copyFileSync } from 'node:fs'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// shortcut: base is '/'. Set base to '/<repo>/' when the site is a GitHub project page, not a user page.
 export default defineConfig({
+  base: '/portfolio/',
   plugins: [
     react(),
     {

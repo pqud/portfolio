@@ -3,6 +3,21 @@ export type Pane = { top: number; height: number; client: number }
 export type RouteHit = { persona: string; projectId: string | null; scene: number }
 export type Route = RouteHit | { redirect: '/' }
 
+export function withBase(path: string, base: string) {
+  const root = base.replace(/\/$/, '')
+  if (!root) return path
+  if (path === '/') return `${root}/`
+  return `${root}${path}`
+}
+
+export function stripBase(pathname: string, base: string) {
+  const root = base.replace(/\/$/, '')
+  if (!root) return pathname
+  if (pathname === root || pathname === `${root}/`) return '/'
+  if (pathname.startsWith(`${root}/`)) return pathname.slice(root.length) || '/'
+  return pathname
+}
+
 export function resolveRoute(
   pathname: string,
   known: { id: string; projects: string[] }[],
