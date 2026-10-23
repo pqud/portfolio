@@ -1,0 +1,90 @@
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; background: #050505; color: #f2f2f6; }
+body { font-family: "Noto Sans KR", sans-serif; overflow: hidden; }
+button, a { font: inherit; color: inherit; }
+button { cursor: pointer; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+.canvas-wrap { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+.canvas-wrap canvas { display: block; }
+
+.top {
+  position: fixed; z-index: 4; top: 0; left: 0; right: 0;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 20px 28px; pointer-events: none;
+}
+.brand { margin: 0; letter-spacing: 0.14em; font-size: 12px; }
+.top nav { display: flex; gap: 20px; pointer-events: auto; }
+.top button { background: none; border: 0; color: #b7a8de; letter-spacing: 0.14em; font-size: 12px; }
+.top button.on { color: #fff; }
+
+main { position: fixed; inset: 0; z-index: 1; }
+.shot {
+  position: absolute; inset: 0;
+  transition: transform 0.8s cubic-bezier(0.45, 0, 0.55, 1), opacity 0.8s cubic-bezier(0.45, 0, 0.55, 1);
+}
+.shot.prev { transform: translate3d(-8vw, 0, 0) scale(0.94); opacity: 0; pointer-events: none; }
+.shot.next { transform: translate3d(10vw, 0, 0) scale(0.96); opacity: 0; pointer-events: none; }
+.shot.on { transform: none; opacity: 1; }
+
+.center-copy { position: absolute; left: 0; right: 0; top: 70vh; text-align: center; }
+.dim { color: #b7adc8; letter-spacing: 0.12em; font-size: 12px; }
+.display {
+  font-family: "Noto Serif KR", serif; font-weight: 500; font-style: italic;
+  color: #2b2436; margin: 0;
+}
+.display.center {
+  position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%);
+  font-size: clamp(72px, 14vw, 180px);
+}
+.display.left { position: absolute; left: 8vw; top: 36vh; font-size: clamp(64px, 10vw, 140px); }
+.display.small { font-size: clamp(42px, 6vw, 84px); top: 40vh; }
+
+.pane {
+  position: absolute; top: 14vh; right: 4vw; width: min(680px, 54vw);
+  max-height: 72vh; overflow: auto; padding-right: 8px;
+}
+.about-grid, .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.card { background: #14141b; border: 1px solid #2c2c36; border-radius: 16px; padding: 18px 18px 20px; }
+.card h3 { margin: 0 0 8px; font-size: 13px; color: #c9bee6; font-weight: 500; }
+.card p { margin: 0; white-space: pre-line; line-height: 1.55; color: #ddd; font-size: 14px; }
+.card img { width: 100%; border-radius: 8px; margin-top: 10px; }
+.kicker { color: #b7a8de; font-size: 13px; }
+.project-name { font-family: "Noto Serif KR", serif; font-size: 56px; margin: 0 0 16px; font-weight: 500; }
+.links a { color: #d9ccff; margin-right: 12px; }
+
+.pills { position: fixed; inset: 0; z-index: 3; opacity: 0; pointer-events: none; transition: opacity 0.8s cubic-bezier(0.45, 0, 0.55, 1); }
+.pills.on { opacity: 1; }
+.pill {
+  position: fixed; transform: translate(-50%, -50%);
+  background: rgba(238, 230, 255, 0.94); color: #322844;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  box-shadow: 0 0 16px rgba(196, 178, 255, 0.28);
+  border-radius: 999px; padding: 8px 14px; pointer-events: none;
+}
+.pills.on .pill { pointer-events: auto; }
+.pill.current { background: #f7f4ff; box-shadow: 0 0 22px rgba(210, 196, 255, 0.7); }
+.swap { opacity: 0; transition: opacity 0.35s ease; }
+.swap.on { opacity: 1; }
+
+.hud {
+  position: fixed; z-index: 4; left: 0; right: 0; bottom: 0;
+  display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 16px;
+  padding: 16px 22px 18px; color: #9a90aa; font-size: 11px; letter-spacing: 0.08em;
+  pointer-events: none;
+}
+.dots { display: flex; gap: 6px; }
+.dots i { width: 18px; height: 2px; background: #3a3548; display: block; }
+.dots i.on { background: #d5c8ff; width: 28px; }
+.sound { pointer-events: auto; background: none; border: 0; color: #b7a8de; letter-spacing: 0.08em; }
+
+button:focus-visible, a:focus-visible { outline: 1px solid #d5c8ff; outline-offset: 3px; }
+html.reduced .shot, html.reduced .pills, html.reduced .swap { transition: none; }
+
+/* shortcut: narrow screens stack cards in one column. Orb pose stays the desktop one until mobile frames exist. */
+@media (max-width: 800px) {
+  .pane { left: 16px; right: 16px; width: auto; top: 28vh; }
+  .about-grid, .cards { grid-template-columns: 1fr; }
+  .display.left { left: 16px; top: 18vh; }
+  .project-name { font-size: 36px; }
+}
